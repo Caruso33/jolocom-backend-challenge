@@ -1,0 +1,44 @@
+openapi: 3.0.0
+info:
+  title: Jolocom Example Service API
+  description: Example of service API with usage of Jolocom SDK
+  contact:
+    name: Jolocom Dev
+    email: dev@jolocom.io
+  version: 1.0.0
+servers:
+- url: /api/v1
+tags:
+- name: Example
+  description: example
+paths:
+  /hello/{thing}:
+    get:
+      tags:
+        - Example
+      summary: Get a hello
+      parameters:
+        - name: thing
+          in: path
+          description: thing to get a hello for
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: The message
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Hello'
+      x-swagger-router-controller: HelloController
+      operationId: getHello
+components:
+  schemas:
+    Hello:
+      title: HelloResource
+      type: object
+      properties:
+        message:
+          type: string
+
