@@ -7,3 +7,4 @@ js
 .env
 var
 src/api/generated-schemas
+*.sqlite
