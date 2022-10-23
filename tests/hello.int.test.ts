@@ -6,9 +6,10 @@ import { HelloResource } from '../src/api/generated-schemas/models'
 import createApp from '../src/app'
 import { createAppContainer } from '../src/config/binding'
 import { config } from '../src/config/config'
+import { DBContext } from '../src/db/db.context'
 
 describe('Hello Test', () => {
-  let app: Application
+  let app: Application, container: Container
 
   beforeEach(async () => {
     const appContainer = await createAppContainer()
@@ -20,6 +21,10 @@ describe('Hello Test', () => {
     )
 
     app = createdApp[0]
+    container = createdApp[1]
+
+    const dbContext: DBContext = await container.get(DBContext)
+    await dbContext.runMigrations()
   })
 
   it('get hello', async () => {

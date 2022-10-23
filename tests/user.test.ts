@@ -1,11 +1,12 @@
 import { Application } from 'express'
 import { Container } from 'inversify'
-import 'reflect-metadata' // this is needed for inversify
+import 'reflect-metadata'
 import request from 'supertest'
 import createApp from '../src/app'
 import { createAppContainer } from '../src/config/binding'
 import { config } from '../src/config/config'
 import { DBContext } from '../src/db/db.context'
+import { getTestUser } from './utils'
 
 /* 
   I've implemented integration tests and skipped unit tests
@@ -23,8 +24,8 @@ describe('User Test', () => {
     app = createdApp[0]
     container = createdApp[1]
 
-    // const dbContext: DBContext = await container.get(DBContext)
-    // await dbContext.runMigrations()
+    const dbContext: DBContext = await container.get(DBContext)
+    await dbContext.runMigrations()
   })
 
   afterAll(async () => {
@@ -50,11 +51,7 @@ describe('User Test', () => {
   })
 
   it('fetches an existing user', async () => {
-    const user = {
-      name: 'elrond',
-      email: 'elrond@lindon.cc',
-      hasJoinedInvitation: true,
-    }
+    const user = getTestUser()
 
     let result = await request(app).post(`/api/v1/user`).send(user)
     expect(result.status).toBe(201)

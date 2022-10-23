@@ -3,7 +3,7 @@ import { HelloController, UserController } from '../controller'
 import { DBContext } from '../db/db.context'
 import { Greeter } from '../hello/greeter'
 import { TYPES } from '../types'
-import { UserRepository } from '../user/user.repository'
+import { UserMetaRepository, UserRepository } from '../user/user.repository'
 import { UserService } from '../user/user.service'
 
 export const binding = new AsyncContainerModule(async (bind) => {
@@ -18,6 +18,7 @@ export const binding = new AsyncContainerModule(async (bind) => {
   bind(TYPES.Controller).to(UserController)
   bind<UserService>(UserService).toSelf().inSingletonScope()
   bind<UserRepository>(UserRepository).toSelf().inSingletonScope()
+  bind<UserMetaRepository>(UserMetaRepository).toSelf().inSingletonScope()
 })
 
 export const createAppContainer = async (): Promise<Container> => {

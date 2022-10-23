@@ -1,0 +1,12 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`User Test ensures creating an user is backwards compatible 1`] = `
+Object {
+  "createdAt": Any<Number>,
+  "email": "elrond@lindon.cc",
+  "hasJoinedInvitation": true,
+  "id": 1,
+  "name": "elrond",
+  "updatedAt": Any<Number>,
+}
+`;

@@ -6,7 +6,10 @@ import { oas3AppOptions } from './oas3'
 import { OpenApiRequestHandler } from 'express-openapi-validator/dist/framework/types'
 
 // Defining default environment variables
-process.env.NODE_ENV = process.env.APP_ENV || 'dev'
+process.env.NODE_ENV =
+  process.env.NODE_ENV === 'test'
+    ? process.env.NODE_ENV
+    : process.env.APP_ENV || 'dev'
 process.env.API_VERSION = process.env.API_VERSION || 'v1'
 
 // Loading env variables defined in .env file into the process.env scope

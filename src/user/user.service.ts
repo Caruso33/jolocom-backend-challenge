@@ -1,15 +1,18 @@
 import { injectable } from 'inversify'
 import { CreateUser } from '../api/generated-schemas/models'
 import { UserDto } from './user.dto'
-import { UserEntity } from './user.entity'
-import { UserRepository } from './user.repository'
+import { UserEntity, UserMetaEntity } from './user.entity'
+import { UserMetaRepository, UserRepository } from './user.repository'
 
 /* 
   Business logic of user 
 */
 @injectable()
 export class UserService {
-  constructor(private readonly userRepo: UserRepository) {}
+  constructor(
+    private readonly userRepo: UserRepository,
+    private readonly userMetaRepo: UserMetaRepository,
+  ) {}
 
   async createUser(user: CreateUser) {
     // basic validation
@@ -33,9 +36,19 @@ export class UserService {
       user.hasJoinedInvitation = false
     }
 
-    const createdUser = await this.userRepo.create(user)
+    const newMetaUser = new UserMetaEntity()
+    newMetaUser.hasJoinedInvitation = user.hasJoinedInvitation
 
-    return UserDto.to(createdUser)
+    await this.userMetaRepo.create(newMetaUser)
+
+    const newUser = new UserEntity()
+    newUser.name = user.name
+    newUser.email = user.email
+    newUser.metadata = newMetaUser
+
+    await this.userRepo.create(newUser)
+
+    return UserDto.toUserEntity(newUser)
   }
 
   async getUser(id: UserEntity['id']) {
@@ -45,6 +58,6 @@ export class UserService {
       return null
     }
 
-    return UserDto.to(user)
+    return UserDto.toUserEntity(user)
   }
 }

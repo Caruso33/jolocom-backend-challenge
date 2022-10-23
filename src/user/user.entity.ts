@@ -2,13 +2,27 @@ import {
   Column,
   CreateDateColumn,
   Entity,
+  JoinColumn,
+  OneToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm'
 
-/* 
-  Database Entity for User
-*/
+@Entity()
+export class UserMetaEntity {
+  @PrimaryGeneratedColumn()
+  id: number
+
+  @Column({ default: false })
+  hasJoinedInvitation: boolean
+
+  @CreateDateColumn()
+  createdAt: Date
+
+  @UpdateDateColumn()
+  updatedAt: Date
+}
+
 @Entity()
 export class UserEntity {
   @PrimaryGeneratedColumn()
@@ -20,12 +34,7 @@ export class UserEntity {
   @Column()
   email: string
 
-  @Column({ default: false })
-  hasJoinedInvitation: boolean
-
-  @CreateDateColumn()
-  createdAt: Date
-
-  @UpdateDateColumn()
-  updatedAt: Date
+  @OneToOne(() => UserMetaEntity)
+  @JoinColumn()
+  metadata: UserMetaEntity
 }
