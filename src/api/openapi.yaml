@@ -6,11 +6,16 @@ info:
     name: Jolocom Dev
     email: dev@jolocom.io
   version: 1.0.0
+
 servers:
-- url: /api/v1
+  - url: /api/v1
+
 tags:
-- name: Example
-  description: example
+  - name: Example
+    description: example
+  - name: User
+    description: user related routes
+
 paths:
   /hello/{thing}:
     get:
@@ -25,7 +30,7 @@ paths:
           schema:
             type: string
       responses:
-        "200":
+        '200':
           description: The message
           content:
             application/json:
@@ -33,6 +38,51 @@ paths:
                 $ref: '#/components/schemas/Hello'
       x-swagger-router-controller: HelloController
       operationId: getHello
+
+  /user:
+    post:
+      tags:
+        - User
+      summary: Create an user
+      requestBody:
+        $ref: '#/components/requestBodies/CreateUser'
+      responses:
+        '201':
+          description: User created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+      x-swagger-router-controller: UserController
+      operationId: createUser
+
+  /user/{id}:
+    get:
+      tags:
+        - User
+      summary: Return an user
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Returns user with id
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '404':
+          description: User resource not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+      x-swagger-router-controller: UserController
+      operationId: getUser
+
 components:
   schemas:
     Hello:
@@ -42,3 +92,69 @@ components:
         message:
           type: string
 
+    CreateUser:
+      title: CreateUser
+      type: object
+      required:
+        - name
+        - email
+      properties:
+        name:
+          type: string
+          example: 'elrond'
+        email:
+          type: string
+          example: 'elrond@lindon.cc'
+        hasJoinedInvitation:
+          type: boolean
+          example: false
+
+    User:
+      title: User
+      type: object
+      required:
+        - id
+        - name
+        - email
+        - hasJoinedInvitation
+        - createdAt
+        - updatedAt
+      properties:
+        id:
+          type: integer
+          format: int64
+          example: 10
+        name:
+          type: string
+          example: 'elrond'
+        email:
+          type: string
+          example: 'elrond@lindon.cc'
+        hasJoinedInvitation:
+          type: boolean
+          default: false
+          example: true
+        createdAt:
+          type: number
+          example: 1666202020
+        updatedAt:
+          type: number
+          example: 1666202020
+
+    ErrorMessage:
+      required:
+        - message
+      title: ErrorMessage
+      type: object
+      properties:
+        message:
+          type: string
+          example: User resource not found
+
+  requestBodies:
+    CreateUser:
+      description: User object to be created
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/CreateUser'
